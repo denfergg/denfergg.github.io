@@ -8,7 +8,8 @@
       @font-face {
         font-family: "SF Pro Display";
         font-weight: bold;
-        src: url("./SFPRODISPLAYBOLD.OTF") format("otf");
+        src: url("path-to-your-font/SFProDisplay-Bold.woff2") format("woff2"),
+          url("path-to-your-font/SFProDisplay-Bold.woff") format("woff");
       }
 
       body,
@@ -20,23 +21,12 @@
         font-family: "SF Pro Display", sans-serif;
       }
 
-      .video-bg {
+      #container {
         position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        z-index: -2;
-      }
-
-      .overlay {
-        position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.25); /* Adjust opacity here */
         z-index: -1;
       }
 
@@ -47,23 +37,96 @@
         transform: translate(-50%, -50%);
         text-align: center;
         color: white;
-        font-size: large;
+        text-shadow: 0 0 10px gray;
+        z-index: 1;
       }
 
       .content h1 {
-        font-size: 4em;
+        font-size: 3em;
         font-weight: bold;
       }
     </style>
   </head>
   <body>
-    <video class="video-bg" autoplay muted loop>
-      <source src="./zoomed-in-arcs.h264[Compressed].mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-    <div class="overlay"></div>
+    <div id="container"></div>
     <div class="content">
       <h1>Work in Progress...</h1>
     </div>
+
+    <!-- Include Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+      // Scene setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById("container").appendChild(renderer.domElement);
+
+      // Earth setup
+      const geometry = new THREE.SphereGeometry(2, 32, 32);
+      const texture = new THREE.TextureLoader().load(
+        "https://threejsfundamentals.org/threejs/resources/images/earth.jpg"
+      );
+      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const sphere = new THREE.Mesh(geometry, material);
+      scene.add(sphere);
+
+      camera.position.z = 5;
+
+      // Animation and interaction
+      let isDragging = false;
+      let previousMousePosition = { x: 0, y: 0 };
+
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+
+      renderer.domElement.addEventListener("mousedown", (event) => {
+        isDragging = true;
+      });
+
+      renderer.domElement.addEventListener("mousemove", (event) => {
+        if (isDragging) {
+          const deltaMove = {
+            x: event.offsetX - previousMousePosition.x,
+            y: event.offsetY - previousMousePosition.y,
+          };
+
+          const rotationSpeed = 0.005;
+
+          sphere.rotation.y += deltaMove.x * rotationSpeed;
+          sphere.rotation.x += deltaMove.y * rotationSpeed;
+        }
+
+        previousMousePosition = {
+          x: event.offsetX,
+          y: event.offsetY,
+        };
+      });
+
+      renderer.domElement.addEventListener("mouseup", () => {
+        isDragging = false;
+      });
+
+      renderer.domElement.addEventListener("mouseleave", () => {
+        isDragging = false;
+      });
+
+      animate();
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      });
+    </script>
   </body>
 </html>
