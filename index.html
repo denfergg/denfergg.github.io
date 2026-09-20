@@ -112,9 +112,28 @@
     display:flex;align-items:center;justify-content:center;
     color:var(--teal);
   }
-  .exercise-meta{flex:1;}
-  .exercise-meta .name{font-weight:700; font-size:1.05rem;}
-  .exercise-meta .cat{color:var(--ink-muted); font-size:0.88rem; margin-top:2px;}
+.exercise-meta {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.exercise-meta .name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.exercise-meta .cat {
+  color: var(--teal);
+  background: rgba(95, 175, 160, 0.12);
+  border: 1px solid rgba(95, 175, 160, 0.25);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+
   .exercise-row .arrow{color:var(--ink-muted); font-size:1.2rem;}
 
   .qr-note{
@@ -879,7 +898,7 @@ function renderScanner(app){
 
 // ---------------- Exercise list view ----------------
 function renderExercises(app){
-  app.innerHTML = `<section class="hero"><div class="list-title">Patient library</div><h1>Assigned exercises, one clear list.</h1><p>Open an exercise from a printed QR card or browse the available demonstrations here.</p></section><div class="exercise-list">${EXERCISES.map((ex, index) => `<button class="exercise-row" data-id="${ex.id}"><span class="number-badge">${String(index + 1).padStart(2, "0")}</span><span class="exercise-meta"><span class="name">${ex.name}</span> │ <span class="cat">${ex.category}</span></span><span class="arrow">&rsaquo;</span></button>`).join("")}</div><div class="qr-note"><strong>For doctors:</strong> create printable QR cards from the protected <a href="#/cards" style="color:var(--amber);font-weight:700;text-decoration:none;">card generator</a>.</div>`;
+  app.innerHTML = `<section class="hero"><div class="list-title">Patient library</div><h1>Assigned exercises, one clear list.</h1><p>Open an exercise from a printed QR card or browse the available demonstrations here.</p></section><div class="exercise-list">${EXERCISES.map((ex, index) => `<button class="exercise-row" data-id="${ex.id}"><span class="number-badge">${String(index + 1).padStart(2, "0")}</span><span class="exercise-meta"><span class="name">${ex.name}</span><span class="cat">${ex.category}</span></span><span class="arrow">&rsaquo;</span></button>`).join("")}</div><div class="qr-note"><strong>For doctors:</strong> create printable QR cards from the protected <a href="#/cards" style="color:var(--amber);font-weight:700;text-decoration:none;">card generator</a>.</div>`;
   app.querySelectorAll(".exercise-row").forEach(row => row.addEventListener("click", () => { location.hash = "/exercise/" + row.dataset.id; }));
 }
 
