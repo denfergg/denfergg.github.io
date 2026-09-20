@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recover — Guided Home Exercises</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<style>
+  :root{
+    --bg:#10201D;
+    --panel:#16302A;
+    --panel-2:#1C3B33;
+    --ink:#EDEDE6;
+    --ink-muted:#9FB6AC;
+    --amber:#E3A65B;
+    --teal:#5FAFA0;
+    --line: rgba(237,237,230,0.12);
+    --radius: 10px;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#10201D; --panel:#16302A; --panel-2:#1C3B33; --ink:#EDEDE6; --ink-muted:#9FB6AC; --line: rgba(237,237,230,0.12);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height:100vh;
+    line-height:1.5;
+  }
+  a{color:inherit;}
+  .ta{font-family:'Noto Sans Tamil','Manrope', sans-serif;}
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:32px 24px 80px;
+  }
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    padding-bottom:28px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:36px;
+  }
+  .wordmark{
+    font-weight:800;
+    font-size:1.15rem;
+    letter-spacing:-0.02em;
+  }
+  .wordmark span{color:var(--amber);}
+  .tag{
+    font-size:0.85rem;
+    color:var(--ink-muted);
+  }
+
+  /* ---------- Home / list view ---------- */
+  .hero h1{
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    font-weight:800;
+    letter-spacing:-0.02em;
+    max-width:16ch;
+    margin:0 0 14px;
+  }
+  .hero p{
+    color:var(--ink-muted);
+    max-width:52ch;
+    font-size:1.02rem;
+    margin:0 0 40px;
+  }
+  .list-title{
+    font-size:0.95rem;
+    color:var(--ink-muted);
+    margin:0 0 6px;
+  }
+  .exercise-list{
+    border-top:1px solid var(--line);
+  }
+  .exercise-row{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:20px 4px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    background:none;
+    border-left:none; border-right:none; border-top:none;
+    width:100%;
+    text-align:left;
+    color:inherit;
+    font-family:inherit;
+    transition:padding-left 0.15s ease;
+  }
+  .exercise-row:hover{
+    padding-left:12px;
+    background:linear-gradient(90deg, rgba(227,166,91,0.06), transparent);
+  }
+  .glyph{
+    width:44px; height:44px;
+    flex:0 0 auto;
+    border-radius:50%;
+    background:var(--panel);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--teal);
+  }
+  .exercise-meta{flex:1;}
+  .exercise-meta .name{font-weight:700; font-size:1.05rem;}
+  .exercise-meta .cat{color:var(--ink-muted); font-size:0.88rem; margin-top:2px;}
+  .exercise-row .arrow{color:var(--ink-muted); font-size:1.2rem;}
+
+  .qr-note{
+    margin-top:40px;
+    padding:18px 20px;
+    background:var(--panel);
+    border-radius:var(--radius);
+    color:var(--ink-muted);
+    font-size:0.9rem;
+  }
+  .qr-note strong{color:var(--ink); font-weight:700;}
+  .qr-note code{
+    background:var(--panel-2);
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:0.85em;
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+    gap:18px;
+  }
+  .qr-cell{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:6px;
+  }
+  .qr-box{
+    background:#fff;
+    padding:10px;
+    border-radius:6px;
+    line-height:0;
+    margin-bottom:6px;
+  }
+  .qr-name{font-weight:700; font-size:0.95rem;}
+  .qr-cat{color:var(--ink-muted); font-size:0.8rem;}
+  .qr-url{color:var(--ink-muted); font-size:0.68rem; word-break:break-all; opacity:0.7; margin-top:4px;}
+
+  @media print{
+    body{background:#fff; color:#111;}
+    header.top, .back, footer.foot, .ex-header .cat{display:none;}
+    .qr-cell{border:1px solid #999; background:#fff; break-inside:avoid;}
+    .qr-name, .qr-cat, .qr-url{color:#111;}
+  }
+
+  /* ---------- Exercise page ---------- */
+  .back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--ink-muted);
+    background:none;
+    border:none;
+    font-family:inherit;
+    font-size:0.9rem;
+    cursor:pointer;
+    padding:0;
+    margin-bottom:24px;
+  }
+  .back:hover{color:var(--ink);}
+
+  .ex-header h1{
+    font-size:clamp(1.6rem, 3.4vw, 2.1rem);
+    font-weight:800;
+    letter-spacing:-0.02em;
+    margin:0 0 6px;
+  }
+  .ex-header .cat{color:var(--teal); font-size:0.9rem; font-weight:600; margin-bottom:28px;}
+
+  .stage{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    margin-bottom:24px;
+  }
+
+  .player{
+    background:var(--panel);
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--line);
+    position:relative;
+  }
+  .screen{
+    position:relative;
+    aspect-ratio:16/10;
+    background:#0F211D;
+  }
+  .screen video{
+    width:100%;
+    height:100%;
+    display:block;
+    background:#0F211D;
+  }
+  .video-fallback{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:8px;
+    padding:20px;
+    text-align:center;
+    color:var(--ink-muted);
+    font-size:0.85rem;
+    background:#0F211D;
+  }
+  .video-fallback code{
+    background:var(--panel-2);
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:0.85em;
+    color:var(--ink);
+  }
+  .caption-bar{
+    min-height:52px;
+    padding:14px 18px;
+    background:#0E1E1B;
+    font-size:0.98rem;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    border-top:1px solid var(--line);
+  }
+  .caption-bar.empty{color:var(--ink-muted); font-style:italic; font-size:0.88rem;}
+  .caption-bar.hidden{display:none;}
+  .control-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 16px;
+    border-top:1px solid var(--line);
+  }
+  .cc-toggle{
+    font-size:0.75rem;
+    padding:4px 8px;
+    border-radius:4px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink-muted);
+    cursor:pointer;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .cc-toggle.on{color:var(--teal); border-color:var(--teal);}
+
+  /* ---------- Language prompt ---------- */
+  .lang-overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(15,33,29,0.92);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:5;
+    padding:20px;
+  }
+  .lang-box{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 24px;
+    text-align:center;
+    max-width:320px;
+    width:100%;
+  }
+  .lang-box h3{margin:0 0 4px; font-size:1.05rem; font-weight:800;}
+  .lang-box p{margin:0 0 20px; color:var(--ink-muted); font-size:0.85rem;}
+  .lang-list{display:flex; flex-direction:column; gap:8px;}
+  .lang-btn{
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.95rem;
+    font-weight:600;
+    padding:12px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .lang-btn:hover{border-color:var(--amber);}
+  .lang-current{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:0.78rem;
+    color:var(--ink-muted);
+    background:transparent;
+    border:1px solid var(--line);
+    padding:4px 9px;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .lang-current:hover{color:var(--ink);}
+
+  .tip-card{
+    background:var(--panel-2);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    border-left:3px solid var(--teal);
+    margin-top:24px;
+  }
+  .tip-card .kicker{color:var(--teal); font-size:0.82rem; font-weight:700; margin-bottom:8px;}
+  .tip-card p{margin:0; color:var(--ink); font-size:0.96rem;}
+
+  footer.foot{
+    margin-top:56px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    color:var(--ink-muted);
+    font-size:0.8rem;
+  }
+
+  .hidden {
+  display: none !important;
+  }
+
+  /* ---------- Scanner and access views ---------- */
+  .top-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .top-nav a{color:var(--ink-muted);text-decoration:none;font-size:0.8rem;padding:6px 10px;border:1px solid transparent;border-radius:6px;}
+  .top-nav a:hover,.top-nav a.active{color:var(--ink);border-color:var(--line);background:var(--panel);}
+  .scanner-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,0.65fr);gap:24px;align-items:start;}
+  .scanner-panel,.access-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+  .scanner-panel h1,.access-panel h1{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.12;margin:0 0 12px;}
+  .scanner-panel p,.access-panel p{color:var(--ink-muted);margin:0 0 22px;}
+  .scan-frame{background:#0B1715;border:1px solid var(--line);border-radius:8px;aspect-ratio:4/3;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .scan-frame video{width:100%;height:100%;object-fit:cover;display:none;}
+  .scan-frame video.active{display:block;}
+  .scan-placeholder{text-align:center;color:var(--ink-muted);padding:24px;}
+  .scan-line{position:absolute;left:12%;right:12%;height:2px;background:var(--amber);box-shadow:0 0 14px var(--amber);top:50%;display:none;}
+  .scan-line.active{display:block;animation:scan-line 2s ease-in-out infinite;}
+  @keyframes scan-line{0%,100%{transform:translateY(-70px)}50%{transform:translateY(70px)}}
+  .scan-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .scan-btn,.primary-btn{background:var(--amber);border:0;border-radius:6px;color:#10201D;font:700 0.9rem Manrope,sans-serif;padding:11px 14px;cursor:pointer;}
+  .scan-btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .scan-status{font-size:0.82rem;color:var(--ink-muted);margin-top:14px;min-height:1.3em;}
+  .manual-scan{display:flex;gap:8px;margin-top:20px;}
+  .manual-scan input,.login-form input{width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:11px;font:inherit;}
+  .manual-scan button{background:var(--teal);border:0;border-radius:6px;color:#0F211D;font-weight:800;padding:0 14px;cursor:pointer;}
+  .scanner-side{border-left:1px solid var(--line);padding-left:24px;}
+  .scanner-side h2{font-size:1rem;margin:0 0 10px;}
+  .scanner-side ol{margin:0;padding-left:22px;color:var(--ink-muted);font-size:0.9rem;}
+  .scanner-side li{padding:6px 0;}
+  .number-badge{width:36px;height:36px;flex:0 0 36px;border:1px solid var(--amber);color:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:800;border-radius:6px;}
+  .login-form{display:flex;flex-direction:column;gap:12px;max-width:420px;}
+  .login-error{color:#E9947B;font-size:0.82rem;min-height:1.25em;}
+  .security-note{margin-top:18px;color:var(--ink-muted);font-size:0.78rem;}
+  .doctor-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:24px;}
+  .logout-btn{background:transparent;border:1px solid var(--line);color:var(--ink-muted);padding:7px 10px;border-radius:5px;cursor:pointer;font:inherit;font-size:0.8rem;}
+  @media(max-width:680px){.wrap{padding:22px 16px 60px}.top-nav{justify-content:flex-start}.scanner-layout{grid-template-columns:1fr}.scanner-side{border-left:0;border-top:1px solid var(--line);padding:20px 0 0}.manual-scan{flex-direction:column}.manual-scan button{padding:11px}.doctor-toolbar{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="wordmark">recover<span>.</span></div>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <a href="#/" data-route="scanner">Scan QR</a>
+      <a href="#/exercises" data-route="exercises">Exercises</a>
+      <a href="#/doctor" data-route="doctor">Doctor console</a>
+    </nav>
+  </header>
+
+  <main id="app"></main>
+
+  <footer class="foot">Physiotherapy is key to good life.</footer>
+</div>
+
+<script>
+// ---------------- Data ----------------
+// Video files: place them in a "videos" folder next to this file, named
+// "<id>.mp4" — e.g. videos/back-extension.mp4
+// ---------------- Data ----------------
+const EXERCISES = [
+  {
+    id: "back-extension",
+    name: "Back Extension",
+    category: "Lower back",
+    videos: {
+      en: "videos/back-extension.mp4",
+      ta: "videos/back-extension-ta.mp4"
+    },
+    tip: "When lifting anything from the floor, bend at your hips and knees, not your lower back — this exercise strengthens the muscles that support it.",
+    captions: {
+      en: [
+        [0.0, 3.2, "Lie on stomach with arms down by side."],
+        [3.2, 6.7, "Keep neck in a neutral position."],
+        [6.7, 14.5, "Squeeze shoulder blades together, down and back, then begin raising chest off the mat."],
+        [14.5, 18.5, "Slowly return to the start position and repeat."],
+        [18.5, 23.0, "If needed, use hands to assist in keeping good form."],
+        [23.0, 27.0, "Try performing three sets of 10 repetitions."]
+      ],
+      ta: [
+        [0.0, 3.2, "குப்புறப் படுத்து கைகளைப் பக்கத்துல வையுங்க."],
+        [3.2, 6.7, "கழுத்தை நேரா வச்சுக்கோங்க."],
+        [6.7, 14.5, "தோள்பட்டை எலும்புகளை ஒண்ணா சேர்த்து பின்னாடி இழுத்து, மெதுவா மார்புப் பகுதியை மேல தூக்குங்க."],
+        [14.5, 18.5, "மெதுவா பழைய நிலைக்கு வந்து இதை திரும்பப் பண்ணுங்க."],
+        [18.5, 23.0, "தேவைப்பட்டா சரியான போஸ்டருக்காக கைகளை உதவிக்கு வச்சுக்கலாம்."],
+        [23.0, 27.0, "இதை 10 முறை வீதம் 3 செட்ஸ் பண்ணுங்க."]
+      ]
+    }
+  },
+  {
+    id: "open-close-book",
+    name: "Open Close Book",
+    category: "Thoracic mobility",
+    videos: {
+      en: "videos/open-close-book.mp4",
+      ta: "videos/open-close-book-ta.mp4"
+    },
+    tip: "If you spend long hours hunched over a desk or phone, your chest muscles tighten and pull your shoulders forward — this rotation restores mobility to that stiffness.",
+    captions: {
+      en: [
+        [3.8, 8.8, "Begin on side, with arms straight and palms touching."],
+        [8.8, 16.5, "Reach top arm up to ceiling and over, turning trunk and head to follow hand as far as comfortable."],
+        [16.5, 22.8, "If arms are limited or painful, this can be performed with arms crossed."],
+        [22.8, 27.5, "Try performing three sets of 10 repetitions."],
+        [27.5, 32.0, "Then switch sides and repeat the exercise."]
+      ],
+      ta: [
+        [3.8, 8.8, "பக்கவாட்டுல படுத்து கைகளை நீட்டி உள்ளங்கைகளை ஒட்டி ஆரம்பிங்க."],
+        [8.8, 16.5, "மேல் கையை மேல தூக்கி பின்னாடி கொண்டு போங்க. கை போற திசையில உடம்பையும் தலையையும் வசதியா திருப்புங்க."],
+        [16.5, 22.8, "கையை நீட்ட முடியலன்னா இல்ல வலி இருந்தா, கைகளை குறுக்கா வச்சும் செய்யலாம்."],
+        [22.8, 27.5, "இதை 10 தடவ வீதம் 3 செட் செய்யப் பாருங்க."],
+        [27.5, 32.0, "அப்புறம் பக்கம் மாறி இதே பயிற்சியை திரும்ப செய்யுங்க."]
+      ]
+    }
+  },
+  {
+    id: "pelvic-tilt-dead-bug-march",
+    name: "Pelvic Tilt & Dead Bug March",
+    category: "Core / lower back",
+    videos: {
+      en: "videos/pelvic-tilt-dead-bug-march.mp4",
+      ta: "videos/pelvic-tilt-dead-bug-march-ta.mp4"
+    },
+    tip: "A weak core lets your lower back arch too much during everyday movement — this exercise trains your core to protect your spine automatically.",
+    captions: {
+      en: [
+        [2.8, 7.8, "Begin on back, with knees bent and feet flat on the mat."],
+        [7.8, 12.8, "Use stomach muscles to press lower back into the mat."],
+        [12.8, 17.5, "Slowly lift one leg and lower, alternating sides."],
+        [17.5, 22.8, "Keep the back pressed into the mat throughout the exercise."],
+        [22.8, 27.0, "Try performing three sets of 10 repetitions on each side."]
+      ],
+      ta: [
+        [2.8, 7.8, "காலை மடிச்சு பாதத்தை விரிப்புல வச்சு மல்லாக்க படுங்க."],
+        [7.8, 12.8, "வயிற்றுத் தசையால கீழ் முதுகை விரிப்புல அழுத்துங்க."],
+        [12.8, 17.5, "மெதுவா ஒரு காலைத் தூக்கி இறக்கி மாத்தி மாத்தி செய்யுங்க."],
+        [17.5, 22.8, "பயிற்சி முழுக்க முதுகை விரிப்புல அழுத்தியே வச்சிருங்க."],
+        [22.8, 27.0, "ஒவ்வொரு பக்கமும் 10 முறை வீதம் 3 செட் செய்யுங்க."]
+      ]
+    }
+  },
+  {
+    id: "trunk-rotation",
+    name: "Trunk Rotation",
+    category: "Spinal mobility",
+    videos: {
+      en: "videos/trunk-rotation.mp4",
+      ta: "videos/trunk-rotation-ta.mp4"
+    },
+    tip: "Avoid twisting suddenly from your waist when reaching sideways at your desk — turn your whole body instead, and use this stretch daily to keep the rotation smooth.",
+    captions: {
+      en: [
+        [3.0, 7.8, "Begin on back, with knees bent and feet flat on the mat."],
+        [7.8, 16.5, "Slowly rotate both knees to one side, then the other, using abdominal muscles to keep back straight."],
+        [16.5, 24.5, "Progress this exercise by putting feet on exercise ball and control side-to-side rotation."],
+        [24.5, 29.0, "Try performing three sets of 10 repetitions."]
+      ],
+      ta: [
+        [3.0, 7.8, "மல்லாக்க படுத்து, முட்டிகளை மடக்கி, பாதங்களை தரையில வையுங்க."],
+        [7.8, 16.5, "வயிற்றுத் தசைகளால முதுகை நேராக்கி, ரெண்டு முட்டிகளையும் மெதுவா ரெண்டு பக்கமும் திருப்புங்க."],
+        [16.5, 24.5, "பந்து மேல பாதங்களை வச்சு, பக்கவாட்டுத் திருப்பத்தைக் கட்டுப்படுத்தி, இதை அடுத்த கட்டத்துக்குக் கொண்டு போங்க."],
+        [24.5, 29.0, "இதை 10 முறை வீதம் 3 செட் செய்ய முயற்சி பண்ணுங்க."]
+      ]
+    }
+  },
+  {
+    id: "plank",
+    name: "Plank",
+    category: "Core strength",
+    videos: {
+      en: "videos/plank.mp4",
+      ta: "videos/plank-ta.mp4"
+    },
+    tip: "Avoid twisting suddenly from your waist when reaching sideways at your desk — turn your whole body instead, and use this stretch daily to keep the rotation smooth.",
+    captions: {
+      en: [
+        [3.8, 6.9, "Begin on stomach, propped on elbows."],
+        [7.3, 12.8, "Press through arms and engage core to lift trunk off mat and hold."],
+        [13.3, 16.9, "Back should stay straight and shoulders engaged."],
+        [17.3, 20.3, "Hold 30 seconds or until fatigue."],
+        [20.9, 23.5, "Try to perform five holds."]
+      ],
+      ta: [
+        [3.5, 6.7, "முழங்கையை ஊன்றி குப்புறப் படுங்க."],
+        [7.1, 12.7, "கைகளால அழுத்தி, உடம்போட நடுப்பகுதியை இறுக்கி மேலே தூக்கி நில்லுங்க."],
+        [13.3, 17.1, "முதுகு நேராகவும் தோள்கள் உறுதியாகவும் இருக்கட்டும்."],
+        [17.4, 20.5, "30 வினாடி அல்லது சோர்வாகும் வரை நில்லுங்க."],
+        [21.1, 23.3, "இதே மாதிரி அஞ்சு முறை செய்ய முயற்சி பண்ணுங்க."]
+      ]
+    }
+  },
+  {
+    id: "elbow-push-up",
+    name: "Elbow Push-Up",
+    category: "Core strength",
+    videos: {
+      en: "videos/elbow-push-ups.mp4",
+      ta: "videos/elbow-push-ups-ta.mp4"
+    },
+    tip: "Avoid twisting suddenly from your waist when reaching sideways at your desk — turn your whole body instead, and use this stretch daily to keep the rotation smooth.",
+    captions: {
+      en: [
+        [3.8, 7.3, "Begin on elbows, shoulder-width apart."],
+        [8.4, 12.8, "Push down through elbows and lift chest and shoulders off bed."],
+        [14.2, 16.7, "Return to the starting position."],
+        [18.9, 22.3, "Try performing three sets of 10 repetitions."]
+      ],
+      ta: [
+        [3.7, 7.3, "முழங்கையை தோள்பட்டை அகலத்துல வச்சு ஆரம்பிங்க."],
+        [8.4, 12.8, "முழங்கையால அழுத்தி நெஞ்சு, தோளை பெட்ல இருந்து தூக்குங்க."],
+        [14.2, 16.7, "திரும்ப பழைய நிலைக்கு வாங்க."],
+        [18.9, 22.3, "10 முறை வீதம் மூணு செட் பண்ண ட்ரை பண்ணுங்க."]
+      ]
+    }
+  },
+  {
+    id: "clamshells",
+    name: "Clamshells",
+    category: "Core strength",
+    videos: {
+      en: "videos/clamshells.mp4",
+      ta: "videos/clamshells-ta.mp4"
+    },
+    tip: "Avoid twisting suddenly from your waist when reaching sideways at your desk — turn your whole body instead, and use this stretch daily to keep the rotation smooth.",
+    captions: {
+      en: [
+        [3.7, 7.0, "Begin on side, with knees bent halfway to chest."],
+        [7.8, 11.2, "Start with feet and knees in line with each other."],
+        [14.9, 18.3, "Rotate the knee of the top leg up toward the ceiling."],
+        [21.2, 23.3, "Return to the start position."],
+        [25.4, 28.5, "Try performing three sets of 10 repetitions."],
+        [29.3, 31.7, "Switch legs and repeat the exercise."]
+      ],
+      ta: [
+        [3.8, 7.0, "ஒருக்களிச்சுப் படுத்து முழங்கால்களை மார்பு வரை மடக்குங்க."],
+        [7.8, 11.4, "பாதமும், முழங்காலும் ஒண்ணுக்கொண்ணு நேரா இருக்கட்டும்."],
+        [14.9, 19.0, "மேல இருக்கிற முழங்காலை மேல பார்த்த மாதிரி திருப்புங்க."],
+        [21.2, 23.5, "திரும்ப பழைய நிலைக்கு வாங்க."],
+        [25.4, 28.7, "இதை 10 தடவை வீதம் மூணு செட் செய்யுங்க."],
+        [29.4, 31.8, "காலை மாத்தி இதை திரும்பவும் செய்யுங்க."]
+      ]
+    }
+  }
+];
+// ---------------- Languages ----------------
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "ta", label: "தமிழ் (Tamil)", cls: "ta" }
+];
+
+// ---------------- Icons ----------------
+const ICONS = {
+  "back-extension": `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17c4 2 14 2 18 0"/><path d="M3 17c0-3 3-5 3-8"/></svg>`,
+  "open-close-book": `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5c-2-1.5-5-1.5-7 0v13c2-1.5 5-1.5 7 0"/><path d="M12 5c2-1.5 5-1.5 7 0v13c-2-1.5-5-1.5-7 0"/><path d="M12 5v13"/></svg>`,
+  "trunk-rotation": `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="5" r="2.2"/><path d="M12 7.5v6"/><path d="M8 13.5c1.3 1 6.7 1 8 0"/><path d="M9 22l3-7 3 7"/></svg>`,
+  "pelvic-tilt-dead-bug-march": `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="5" r="2"/><path d="M7 7v6"/><path d="M7 13l-3 6M7 13l4 4"/><path d="M11 6h9"/></svg>`
+};
+
+
+// ---------------- Public QR URL ----------------
+const PUBLIC_BASE_URL = "https://denfergg.github.io";
+const exerciseUrl = id => `${PUBLIC_BASE_URL}/#/exercise/${id}`;
+
+// ---------------- Prescription Builder ----------------
+function generatePrescriptionTab(patientData, selectedExercises) {
+  const printWindow = window.open("", "_blank");
+
+  const exerciseRowsHtml = selectedExercises.map(item => {
+    const ex = EXERCISES.find(e => e.id === item.id);
+    const targetUrl = exerciseUrl(ex.id);
+    return `
+      <div class="rx-exercise-card">
+        <div class="rx-qr-box" id="qr-${ex.id}"></div>
+        <div class="rx-details">
+          <h3>${ex.name}</h3>
+          <div class="rx-dosage"><strong>Dosage:</strong> ${item.sets} Sets × ${item.reps} Reps ${item.notes ? `• ${item.notes}` : ''}</div>
+          <p class="rx-tip"><strong>Ergonomic tip:</strong> ${ex.tip}</p>
+          <div class="rx-link">${targetUrl}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Physiotherapy Prescription - ${patientData.name}</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+      <style>
+        @page { size: A4 portrait; margin: 16mm; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a1a; margin: 0; padding: 10px; font-size: 13px; line-height: 1.4; }
+        .rx-header { display: flex; justify-content: space-between; border-bottom: 2px solid #0F211D; padding-bottom: 12px; margin-bottom: 16px; }
+        .rx-clinic h2 { margin: 0; color: #16302A; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .rx-clinic p { margin: 2px 0; font-size: 11px; color: #555; }
+        .rx-badge { text-align: right; }
+        .rx-badge h1 { margin: 0; font-size: 26px; color: #E3A65B; font-weight: 900; }
+        .patient-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; background: #fdfdfd; border: 1px solid #e0e0e0; }
+        .patient-table td { padding: 6px 10px; border: 1px solid #e0e0e0; }
+        .rx-exercise-card { display: flex; align-items: center; gap: 16px; border: 1px solid #ddd; border-radius: 6px; padding: 12px; margin-bottom: 12px; page-break-inside: avoid; }
+        .rx-qr-box { flex: 0 0 110px; height: 110px; }
+        .rx-details { flex: 1; }
+        .rx-details h3 { margin: 0 0 4px; font-size: 15px; color: #16302A; }
+        .rx-dosage { font-size: 13px; color: #111; margin-bottom: 4px; }
+        .rx-tip { font-size: 11.5px; color: #555; margin: 0 0 4px; }
+        .rx-link { font-size: 9px; color: #888; font-family: monospace; word-break: break-all; }
+        .print-actions { margin-bottom: 16px; display: flex; gap: 8px; }
+        .btn { padding: 8px 16px; background: #16302A; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        @media print {
+          .print-actions { display: none; }
+          body { padding: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="rx-header">
+        <div class="rx-clinic">
+          <h2>Department of Physical Medicine & Rehabilitation</h2>
+          <p>Government Hospital & Healthcare Center • Tele-Physiotherapy Support</p>
+        </div>
+        <div class="rx-badge">
+          <h1>℞</h1>
+        </div>
+      </div>
+      <table class="patient-table">
+        <tr>
+          <td><strong>Patient Name:</strong> ${patientData.name || "N/A"}</td>
+          <td><strong>Age / Gender:</strong> ${patientData.ageGender || "N/A"}</td>
+          <td><strong>Date:</strong> ${new Date().toLocaleDateString()}</td>
+        </tr>
+        <tr>
+          <td colspan="3"><strong>Clinical Diagnosis:</strong> ${patientData.diagnosis || "Postural Rehabilitation & Strengthening"}</td>
+        </tr>
+      </table>
+      <div class="rx-list">${exerciseRowsHtml}</div>
+    </body>
+    </html>
+  `);
+
+  // Render QR Codes into the newly opened document
+  printWindow.document.close();
+  selectedExercises.forEach(item => {
+    const targetUrl = exerciseUrl(item.id);
+    new printWindow.QRCode(printWindow.document.getElementById(`qr-${item.id}`), {
+      text: targetUrl,
+      width: 110,
+      height: 110,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: printWindow.QRCode.CorrectLevel.M
+    });
+  });
+}
+
+
+// ---------------- Router ----------------
+function route(){
+  const hash = location.hash.replace(/^#\/?/, "");
+  const app = document.getElementById("app");
+  document.querySelectorAll("[data-route]").forEach(link => {
+    link.classList.toggle("active", (hash === "exercises" && link.dataset.route === "exercises") || (hash === "doctor" && link.dataset.route === "doctor") || (!hash && link.dataset.route === "scanner"));
+  });
+  if(hash.startsWith("exercise/")){
+    const id = hash.split("/")[1];
+    const ex = EXERCISES.find(e => e.id === id);
+    if(ex){ renderExercise(app, ex); return; }
+  }
+  if(hash === "cards"){
+    if(sessionStorage.getItem("recover_doctor_authenticated") === "true") renderCards(app);
+    else renderDoctorLogin(app);
+    return;
+  }
+  if(hash === "exercises"){ renderExercises(app); return; }
+  if(hash === "doctor-login"){ renderDoctorLogin(app); return; }
+  if(hash === "doctor") {
+    if(sessionStorage.getItem("recover_doctor_authenticated") === "true") renderDoctorView(app);
+    else renderDoctorLogin(app);
+    return;
+  }
+  renderScanner(app);
+}
+window.addEventListener("hashchange", route);
+window.addEventListener("DOMContentLoaded", route);
+
+// ---------------- Doctor's Prescription View ----------------
+function renderDoctorView(app) {
+  app.innerHTML = `
+    <div class="doctor-toolbar">
+      <button class="back">&larr; Patient scanner</button>
+      <button class="logout-btn" id="logoutBtn">Sign out</button>
+    </div>
+    <div class="ex-header">
+      <h1>Prescribe Exercises (Doctor's Console)</h1>
+      <div class="cat">Select prescribed exercises and generate a printable hardcopy sheet</div>
+    </div>
+    
+    <div style="background:var(--panel); padding:20px; border-radius:var(--radius); margin-bottom:24px; border:1px solid var(--line);">
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:12px;">
+        <input id="pName" placeholder="Patient Full Name" style="padding:10px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink); border-radius:6px;">
+        <input id="pAgeGender" placeholder="Age / Gender (e.g. 45 / M)" style="padding:10px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink); border-radius:6px;">
+      </div>
+      <input id="pDiag" placeholder="Clinical Indication (e.g. Mechanical Lower Back Pain)" style="width:100%; padding:10px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink); border-radius:6px;">
+    </div>
+
+    <div style="margin-bottom:16px; font-weight:700;">Select Exercises to Prescribe:</div>
+    <div style="display:flex; flex-direction:column; gap:10px;" id="rxExercisesContainer">
+      ${EXERCISES.map(ex => `
+        <div style="display:flex; align-items:center; gap:12px; background:var(--panel); padding:14px; border-radius:var(--radius); border:1px solid var(--line);">
+          <input type="checkbox" id="check-${ex.id}" value="${ex.id}" style="width:18px; height:18px; accent-color:var(--amber);">
+          <label for="check-${ex.id}" style="flex:1; cursor:pointer;">
+            <strong style="color:var(--ink);">${ex.name}</strong>
+            <span style="color:var(--ink-muted); font-size:0.85rem; margin-left:8px;">(${ex.category})</span>
+          </label>
+          <div style="display:flex; gap:8px;">
+            <input id="sets-${ex.id}" type="number" value="3" min="1" max="10" title="Sets" style="width:50px; padding:6px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink); border-radius:4px; text-align:center;"> sets
+            <input id="reps-${ex.id}" type="number" value="10" min="1" max="30" title="Reps" style="width:50px; padding:6px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink); border-radius:4px; text-align:center;"> reps
+          </div>
+        </div>
+      `).join("")}
+    </div>
+
+    <button id="printRxBtn" style="margin-top:24px; width:100%; background:var(--teal); color:#0F211D; padding:14px; border:none; border-radius:var(--radius); font-weight:800; font-size:1rem; cursor:pointer; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+      📄 Generate & Print Prescription Sheet
+    </button>
+  `;
+
+  app.querySelector(".back").addEventListener("click", () => { location.hash = "/"; });
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    sessionStorage.removeItem("recover_doctor_authenticated");
+    location.hash = "/";
+  });
+
+  document.getElementById("printRxBtn").addEventListener("click", () => {
+    const selected = [];
+    EXERCISES.forEach(ex => {
+      const checkbox = document.getElementById(`check-${ex.id}`);
+      if (checkbox && checkbox.checked) {
+        selected.push({
+          id: ex.id,
+          sets: document.getElementById(`sets-${ex.id}`).value || 3,
+          reps: document.getElementById(`reps-${ex.id}`).value || 10
+        });
+      }
+    });
+
+    if (selected.length === 0) {
+      alert("Please check at least one exercise to prescribe.");
+      return;
+    }
+
+    const patientData = {
+      name: document.getElementById("pName").value.trim(),
+      ageGender: document.getElementById("pAgeGender").value.trim(),
+      diagnosis: document.getElementById("pDiag").value.trim()
+    };
+
+    generatePrescriptionTab(patientData, selected);
+  });
+}
+
+// ---------------- QR scanner view ----------------
+function renderScanner(app){
+  app.innerHTML = `
+    <div class="scanner-layout">
+      <section class="scanner-panel">
+        <div class="list-title">Patient check-in</div>
+        <h1>Scan your exercise card.</h1>
+        <p>Use the camera to open the exercise assigned by your physiotherapist. You can also paste a QR link below.</p>
+        <div class="scan-frame">
+          <video id="qrVideo" playsinline></video>
+          <div class="scan-placeholder" id="scanPlaceholder">Camera preview will appear here when scanning starts.</div>
+          <div class="scan-line" id="scanLine"></div>
+        </div>
+        <div class="scan-actions">
+          <button class="scan-btn" id="startScanner">Start camera</button>
+          <button class="scan-btn secondary" id="stopScanner">Stop camera</button>
+        </div>
+        <div class="scan-status" id="scanStatus" role="status">Ready to scan.</div>
+        <div class="manual-scan">
+          <input id="manualQr" type="url" placeholder="Paste a QR link or exercise URL" aria-label="QR link">
+          <button id="openManualQr">Open</button>
+        </div>
+      </section>
+      <aside class="scanner-side">
+        <h2>How it works</h2>
+        <ol><li>Allow camera access.</li><li>Hold the exercise card inside the frame.</li><li>Your assigned exercise opens automatically.</li></ol>
+        <p class="security-note">Doctor tools are separated behind a sign-in and are not part of the patient workflow.</p>
+      </aside>
+    </div>
+  `;
+
+  const video = document.getElementById("qrVideo");
+  const placeholder = document.getElementById("scanPlaceholder");
+  const line = document.getElementById("scanLine");
+  const status = document.getElementById("scanStatus");
+  let stream = null;
+  let animationFrame = null;
+  const openPayload = payload => {
+    const match = payload.match(/#\/?exercise\/([a-z0-9-]+)/i) || payload.match(/exercise\/([a-z0-9-]+)/i);
+    const ex = match && EXERCISES.find(item => item.id === match[1]);
+    if(ex){ stopScanning(); location.hash = "/exercise/" + ex.id; }
+    else status.textContent = "That QR code is not a Recover exercise card.";
+  };
+  const scanFrame = () => {
+    if(!stream || video.readyState < 2){ animationFrame = requestAnimationFrame(scanFrame); return; }
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const result = window.jsQR && jsQR(context.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
+    if(result){ openPayload(result.data); return; }
+    animationFrame = requestAnimationFrame(scanFrame);
+  };
+  function stopScanning(){
+    if(animationFrame) cancelAnimationFrame(animationFrame);
+    if(stream) stream.getTracks().forEach(track => track.stop());
+    stream = null; video.pause(); video.classList.remove("active"); line.classList.remove("active"); placeholder.classList.remove("hidden");
+  }
+  document.getElementById("startScanner").addEventListener("click", async () => {
+    if(!navigator.mediaDevices){ status.textContent = "Camera access is unavailable in this browser."; return; }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+      video.srcObject = stream; await video.play(); video.classList.add("active"); line.classList.add("active"); placeholder.classList.add("hidden"); status.textContent = "Looking for a Recover QR code..."; scanFrame();
+    } catch(error){ status.textContent = "Camera access was blocked. Paste the QR link below instead."; }
+  });
+  document.getElementById("stopScanner").addEventListener("click", () => { stopScanning(); status.textContent = "Scanner stopped."; });
+  document.getElementById("openManualQr").addEventListener("click", () => openPayload(document.getElementById("manualQr").value.trim()));
+}
+
+// ---------------- Exercise list view ----------------
+function renderExercises(app){
+  app.innerHTML = `<section class="hero"><div class="list-title">Patient library</div><h1>Assigned exercises, one clear list.</h1><p>Open an exercise from a printed QR card or browse the available demonstrations here.</p></section><div class="exercise-list">${EXERCISES.map((ex, index) => `<button class="exercise-row" data-id="${ex.id}"><span class="number-badge">${String(index + 1).padStart(2, "0")}</span><span class="exercise-meta"><span class="name">${ex.name}</span><span class="cat">${ex.category}</span></span><span class="arrow">&rsaquo;</span></button>`).join("")}</div><div class="qr-note"><strong>For doctors:</strong> create printable QR cards from the protected <a href="#/cards" style="color:var(--amber);font-weight:700;text-decoration:none;">card generator</a>.</div>`;
+  app.querySelectorAll(".exercise-row").forEach(row => row.addEventListener("click", () => { location.hash = "/exercise/" + row.dataset.id; }));
+}
+
+// ---------------- Doctor login ----------------
+function renderDoctorLogin(app){
+  app.innerHTML = `<section class="access-panel"><div class="list-title">Restricted access</div><h1>Doctor sign in.</h1><p>The prescription console is only available to clinical staff.</p><form class="login-form" id="doctorLoginForm"><input id="doctorId" autocomplete="username" placeholder="Doctor ID" required><input id="doctorPassword" type="password" autocomplete="current-password" placeholder="Password" required><div class="login-error" id="loginError"></div><button class="primary-btn" type="submit">Enter console</button></form><div class="security-note">For this local demo, use Doctor ID <strong>doctor</strong> and password <strong>recover</strong>.</div></section>`;
+  document.getElementById("doctorLoginForm").addEventListener("submit", event => {
+    event.preventDefault();
+    const valid = document.getElementById("doctorId").value.trim() === "doctor" && document.getElementById("doctorPassword").value === "recover";
+    if(valid){ sessionStorage.setItem("recover_doctor_authenticated", "true"); location.hash = "/doctor"; route(); }
+    else document.getElementById("loginError").textContent = "Incorrect Doctor ID or password.";
+  });
+}
+
+// ---------------- QR cards view ----------------
+function renderCards(app){
+  app.innerHTML = `
+    <button class="back">&larr; All exercises</button>
+    <div class="ex-header">
+      <h1>Printable exercise cards</h1>
+      <div class="cat">One QR per exercise — links are hosted at ${PUBLIC_BASE_URL}</div>
+    </div>
+    <div class="card-grid" id="cardGrid"></div>
+  `;
+
+  app.querySelector(".back").addEventListener("click", () => { location.hash = "/"; });
+
+  function drawCodes() {
+    const grid = document.getElementById("cardGrid");
+    grid.innerHTML = "";
+    EXERCISES.forEach(ex => {
+      const url = exerciseUrl(ex.id);
+      const cell = document.createElement("div");
+      cell.className = "qr-cell";
+      cell.innerHTML = `
+        <div class="qr-box" id="qr-${ex.id}"></div>
+        <div class="qr-name">${ex.name}</div>
+        <div class="qr-cat">${ex.category}</div>
+
+      `;
+      grid.appendChild(cell);
+      if(window.QRCode){
+        new QRCode(cell.querySelector(".qr-box"), {
+          text: url,
+          width: 168,
+          height: 168,
+          colorDark: "#10201D",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    });
+  }
+
+  drawCodes();
+}
+// ---------------- Exercise view ----------------
+function renderExercise(app, ex){
+  app.innerHTML = `
+    <button class="back">&larr; All exercises</button>
+    <div class="ex-header">
+      <h1>${ex.name}</h1>
+      <div class="cat">${ex.category}</div>
+    </div>
+    <div class="stage">
+      <div class="player">
+        <div id="langOverlay"></div>
+        <div class="screen">
+          <video id="exVideo" playsinline controls preload="metadata"></video>
+          <div class="video-fallback hidden" id="videoFallback">
+            Couldn't load the video.<br>Check that the file exists in the <code>videos/</code> folder.
+          </div>
+        </div>
+        <div class="caption-bar empty" id="captionBar">Select a language to begin</div>
+        <div class="control-row">
+          <button class="cc-toggle on" id="ccToggle">CC</button>
+          <button class="lang-current" id="langCurrent">🌐 <span id="langCurrentLabel">Language</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="kicker">Daily ergonomic correction</div>
+      <p>${ex.tip}</p>
+    </div>
+  `;
+
+  app.querySelector(".back").addEventListener("click", () => { location.hash = "/"; });
+
+  const video = document.getElementById("exVideo");
+  const videoFallback = document.getElementById("videoFallback");
+  const captionBar = document.getElementById("captionBar");
+  const ccToggle = document.getElementById("ccToggle");
+  const langOverlay = document.getElementById("langOverlay");
+  const langCurrent = document.getElementById("langCurrent");
+  const langCurrentLabel = document.getElementById("langCurrentLabel");
+
+  let ccOn = true;
+  let chosenLang = null;
+
+videoFallback.classList.add("hidden");
+
+// Show fallback ONLY if loading completely fails
+video.addEventListener("error", () => {
+  // Check if src is actually assigned before showing failure
+  if (video.currentSrc || video.src) {
+    videoFallback.classList.remove("hidden");
+  }
+});
+
+video.addEventListener("loadeddata", () => {
+  videoFallback.classList.add("hidden");
+});
+
+  ccToggle.addEventListener("click", () => {
+    ccOn = !ccOn;
+    ccToggle.classList.toggle("on", ccOn);
+    captionBar.classList.toggle("hidden", !ccOn);
+  });
+
+  function updateCaption(){
+    if(!chosenLang) return;
+    const cues = ex.captions[chosenLang.code] || [];
+    const t = video.currentTime;
+    const cue = cues.find(c => t >= c[0] && t < c[1]);
+    captionBar.classList.remove("empty");
+    captionBar.classList.toggle("ta", chosenLang.cls === "ta");
+    captionBar.textContent = cue ? cue[2] : "…";
+  }
+
+  video.addEventListener("timeupdate", updateCaption);
+
+  function selectLanguage(code){
+    const lang = LANGUAGES.find(l => l.code === code);
+    chosenLang = lang;
+    langOverlay.innerHTML = "";
+    langCurrentLabel.textContent = lang.label;
+    langCurrentLabel.classList.toggle("ta", lang.cls === "ta");
+
+    // Resolve video for selected language, fall back to English if missing
+    const videoSrc = (ex.videos && ex.videos[code]) ? ex.videos[code] : (ex.videos ? ex.videos.en : ex.video);
+
+    videoFallback.classList.add("hidden");
+    
+    // Remember current playback position if user is switching languages mid-video
+    const resumeTime = video.currentTime || 0;
+
+    // Load and play the language-specific video
+    video.src = videoSrc;
+    video.load();
+    
+    video.onloadedmetadata = () => {
+      video.currentTime = resumeTime;
+      video.play().catch(() => {
+        captionBar.classList.remove("empty");
+        captionBar.textContent = "Press play to start the exercise video.";
+      });
+    };
+
+    captionBar.classList.add("empty");
+    captionBar.textContent = "…";
+  }
+
+  function showLanguagePrompt(){
+    video.pause();
+    langOverlay.innerHTML = `
+      <div class="lang-overlay">
+        <div class="lang-box">
+          <h3>Choose your language</h3>
+          <p>The video and captions for ${ex.name} will play in your selected language.</p>
+          <div class="lang-list">
+            ${LANGUAGES.map(l => `
+              <button class="lang-btn ${l.cls || ''}" data-code="${l.code}">
+                <span>${l.label}</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+    langOverlay.querySelectorAll(".lang-btn").forEach(btn => {
+      btn.addEventListener("click", () => selectLanguage(btn.dataset.code));
+    });
+  }
+
+  langCurrent.addEventListener("click", showLanguagePrompt);
+
+  showLanguagePrompt();
+}
+</script>
+</body>
+</html>
