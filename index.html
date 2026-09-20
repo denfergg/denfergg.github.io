@@ -154,7 +154,7 @@
   .card-grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
-    gap:18px;
+    gap:32px;
   }
   .qr-cell{
     background:var(--panel);
@@ -165,7 +165,8 @@
     flex-direction:column;
     align-items:center;
     text-align:center;
-    gap:6px;
+    gap:10px;
+    min-height:270px;
   }
   .qr-box{
     background:#fff;
@@ -181,10 +182,9 @@
   @media print{
     body{background:#fff; color:#111;}
     header.top, .back, footer.foot, .ex-header .cat{display:none;}
-    .card-grid{display:block;}
-    .qr-cell{border:1px solid #999; background:#fff; break-inside:avoid; break-after:page; min-height:250mm; justify-content:center;}
-    .qr-cell:last-child{break-after:auto;}
-    .qr-box{padding:16px;}
+    .card-grid{gap:28px;}
+    .qr-cell{border:1px solid #999; background:#fff; break-inside:avoid;}
+    .qr-box{padding:12px;}
     .qr-name, .qr-cat, .qr-url{color:#111;}
   }
 
@@ -661,9 +661,9 @@ function generatePrescriptionTab(patientData, selectedExercises) {
         .rx-badge h1 { margin: 0; font-size: 26px; color: #E3A65B; font-weight: 900; }
         .patient-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; background: #fdfdfd; border: 1px solid #e0e0e0; }
         .patient-table td { padding: 6px 10px; border: 1px solid #e0e0e0; }
-        .rx-exercise-card { display: flex; align-items: center; gap: 24px; border: 1px solid #ddd; border-radius: 6px; padding: 24px; margin-bottom: 12px; page-break-inside: avoid; }
+        .rx-exercise-card { display: flex; flex-direction: column; align-items: center; gap: 14px; border: 1px solid #ddd; border-radius: 6px; padding: 24px; margin-bottom: 24px; page-break-inside: avoid; text-align: center; }
         .rx-qr-box { flex: 0 0 220px; width: 220px; height: 220px; }
-        .rx-details { flex: 1; }
+        .rx-details { width: 100%; }
         .rx-details h3 { margin: 0 0 4px; font-size: 15px; color: #16302A; }
         .rx-dosage { font-size: 13px; color: #111; margin-bottom: 4px; }
         .rx-tip { font-size: 11.5px; color: #555; margin: 0 0 4px; }
@@ -673,10 +673,7 @@ function generatePrescriptionTab(patientData, selectedExercises) {
         @media print {
           .print-actions { display: none; }
           body { padding: 0; }
-          .rx-exercise-card { min-height: 245mm; flex-direction: column; justify-content: center; text-align: center; page-break-after: always; }
-          .rx-exercise-card:last-child { page-break-after: auto; }
-          .rx-qr-box { flex-basis: 220px; }
-          .rx-details { width: 100%; }
+          .rx-exercise-card { margin-bottom: 24px; }
         }
       </style>
     </head>
